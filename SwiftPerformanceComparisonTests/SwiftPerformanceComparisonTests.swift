@@ -20,15 +20,61 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    /**  Measure the performance
+    difference of functional Array modification versus non-functional array modification. This is
+    a good guidance as using functional modification on arrays looks much better, however seems to
+    perform much worse. Consider:
+    Replacement: Functional: 1.153 sec, Mutating: 0.527 sec
+    Appending: Functional: 0.057 sec, Mutating: 0.004 sec
+    */
+    func testArrayFuncReplace() {
+        // Measure Replacement
+        self.measureBlock() {
+            var cx = 0
+            for i in 0..<100000 {
+                let ix = [i, i + 1, i + 2, i + 3, i + 4, i + 5]
+                // we want to measure this
+                let ix2 = [5 + i * 2] + Array(ix[1..<ix.count])
+                
+                let s = ix2.reduce(0, combine: (+))
+                cx += s
+            }
+        }
+        
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
+    func testArrayFuncAppend() {
+        // Measure Appending
+        self.measureBlock { () -> Void in
+            var arx: [Int] = []
+            for i in 0..<10000 {
+                arx = arx + [i]
+            }
+        }
+    }
+    
+    func testArrayNFuncReplace() {
+        // Measure Replacement
         self.measureBlock() {
-            // Put the code you want to measure the time of here.
+            var cx = 0
+            for i in 0..<100000 {
+                var ix = [i, i + 1, i + 2, i + 3, i + 4, i + 5]
+                // We want to measure this
+                ix.replaceRange(0..<1, with: [5 + i * 2])
+                let s = ix.reduce(0, combine: (+))
+                cx += s
+            }
+        }
+        
+    }
+    
+    func testArrayNFuncAppend() {
+        // Measure Appending
+        self.measureBlock { () -> Void in
+            var arx:[Int] = []
+            for i in 0..<10000 {
+                arx.append(i)
+            }
         }
     }
     
