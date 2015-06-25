@@ -82,8 +82,7 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         let t = 0...1000
         self.measureBlock { () -> Void in
             for _ in 0...100 {
-                let r = t.map { $0 * 2}
-                let v = r.count
+                t.map { $0 * 2}
             }
         }
     }
@@ -96,7 +95,6 @@ class SwiftPerformanceComparisonTests: XCTestCase {
                 for c in t {
                     r.append(c * 2)
                 }
-                let v = r.count
             }
         }
     }
@@ -110,7 +108,6 @@ class SwiftPerformanceComparisonTests: XCTestCase {
                 for c in t {
                     r.append({ return c * 2}())
                 }
-                let v = r.count
             }
         }
     }
