@@ -78,4 +78,40 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         }
     }
     
+    func testArrayFuncMap() {
+        let t = 0...1000
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                let r = t.map { $0 * 2}
+                let v = r.count
+            }
+        }
+    }
+    
+    func testArrayNFuncMap() {
+        let t = 0...1000
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                var r: [Int] = []
+                for c in t {
+                    r.append(c * 2)
+                }
+                let v = r.count
+            }
+        }
+    }
+    
+    func testArrayHNFuncMap() {
+        // half-test,
+        let t = 0...1000
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                var r: [Int] = []
+                for c in t {
+                    r.append({ return c * 2}())
+                }
+                let v = r.count
+            }
+        }
+    }
 }
