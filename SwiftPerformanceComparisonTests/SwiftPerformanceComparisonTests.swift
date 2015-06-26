@@ -111,4 +111,29 @@ class SwiftPerformanceComparisonTests: XCTestCase {
             }
         }
     }
+    
+    func testArrayFuncFilter() {
+       let t = 0...1000
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                t.filter({ (e: Int) -> Bool in
+                    return e % 3 == 0
+                })
+            }
+        }
+    }
+    
+    func testArrayNFuncFilter() {
+        let t = 0...1000
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                var r: [Int] = []
+                for c in t {
+                    if c % 3 == 0 {
+                        r.append(c)
+                    }
+                }
+            }
+        }
+    }
 }
