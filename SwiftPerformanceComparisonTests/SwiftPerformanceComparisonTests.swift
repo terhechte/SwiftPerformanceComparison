@@ -8,6 +8,14 @@
 
 import XCTest
 
+/**  Measure the performance
+difference of functional Array modification versus non-functional array modification. This is
+a good guidance as using functional modification on arrays looks much better, however seems to
+perform much worse. Consider:
+Replacement: Functional: 1.153 sec, Mutating: 0.527 sec
+Appending: Functional: 0.057 sec, Mutating: 0.004 sec
+*/
+
 class SwiftPerformanceComparisonTests: XCTestCase {
     
     override func setUp() {
@@ -20,13 +28,9 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         super.tearDown()
     }
     
-    /**  Measure the performance
-    difference of functional Array modification versus non-functional array modification. This is
-    a good guidance as using functional modification on arrays looks much better, however seems to
-    perform much worse. Consider:
-    Replacement: Functional: 1.153 sec, Mutating: 0.527 sec
-    Appending: Functional: 0.057 sec, Mutating: 0.004 sec
-    */
+    
+    // MARK: Replace in array
+    
     func testArrayFuncReplace() {
         // Measure Replacement
         self.measureBlock() {
@@ -38,17 +42,6 @@ class SwiftPerformanceComparisonTests: XCTestCase {
                 
                 let s = ix2.reduce(0, combine: (+))
                 cx += s
-            }
-        }
-        
-    }
-    
-    func testArrayFuncAppend() {
-        // Measure Appending
-        self.measureBlock { () -> Void in
-            var arx: [Int] = []
-            for i in 0..<10000 {
-                arx = arx + [i]
             }
         }
     }
@@ -68,6 +61,18 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         
     }
     
+    // MARK: Append to array
+    
+    func testArrayFuncAppend() {
+        // Measure Appending
+        self.measureBlock { () -> Void in
+            var arx: [Int] = []
+            for i in 0..<10000 {
+                arx = arx + [i]
+            }
+        }
+    }
+    
     func testArrayNFuncAppend() {
         // Measure Appending
         self.measureBlock { () -> Void in
@@ -78,8 +83,10 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         }
     }
     
+    // MARK: Map versues for looops
+    
     func testArrayFuncMap() {
-        let t = 0...1000
+        let t = Array(0...1000)
         self.measureBlock { () -> Void in
             for _ in 0...100 {
                 t.map { $0 * 2}
@@ -88,7 +95,7 @@ class SwiftPerformanceComparisonTests: XCTestCase {
     }
     
     func testArrayNFuncMap() {
-        let t = 0...1000
+        let t = Array(0...1000)
         self.measureBlock { () -> Void in
             for _ in 0...100 {
                 var r: [Int] = []
@@ -101,7 +108,7 @@ class SwiftPerformanceComparisonTests: XCTestCase {
     
     func testArrayHNFuncMap() {
         // half-test,
-        let t = 0...1000
+        let t = Array(0...1000)
         self.measureBlock { () -> Void in
             for _ in 0...100 {
                 var r: [Int] = []
@@ -112,8 +119,10 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         }
     }
     
+    // MARK: Filter vs For loops
+    
     func testArrayFuncFilter() {
-       let t = 0...1000
+       let t = Array(0...1000)
         self.measureBlock { () -> Void in
             for _ in 0...100 {
                 t.filter({ (e: Int) -> Bool in
@@ -124,7 +133,7 @@ class SwiftPerformanceComparisonTests: XCTestCase {
     }
     
     func testArrayNFuncFilter() {
-        let t = 0...1000
+       let t = Array(0...1000)
         self.measureBlock { () -> Void in
             for _ in 0...100 {
                 var r: [Int] = []
@@ -136,4 +145,5 @@ class SwiftPerformanceComparisonTests: XCTestCase {
             }
         }
     }
+    
 }
