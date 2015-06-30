@@ -146,4 +146,74 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         }
     }
     
+    // MARK: Flatten Nested Arrays
+    
+    func testNestedArrayNFunc() {
+        
+        let nestedArray = [Array(0...100), Array(100...200), Array(200...300), Array(300...400), Array(400...500), Array(500...600)]
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                var nested: [Int] = []
+                for n in nestedArray {
+                    for u in n {
+                        nested.append(u)
+                    }
+                }
+            }
+        }
+    }
+    
+    func testNestedArrayNFuncRecur() {
+        
+        func recurse(inout container: [Int], xs: [AnyObject]) {
+            for n in xs {
+                switch n {
+                case let v as [Int]:
+                    recurse(&container, xs: v)
+                case let v as Int:
+                    container.append(v)
+                default: ()
+                }
+            }
+        }
+        
+        let nestedArray = [Array(0...100), Array(100...200), Array(200...300), Array(300...400), Array(400...500), Array(500...600)]
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                var nested: [Int] = []
+                recurse(&nested, xs: nestedArray)
+            }
+        }
+    }
+    
+    func testNestedArrayFuncJoin() {
+        
+        let nestedArray = [Array(0...100), Array(100...200), Array(200...300), Array(300...400), Array(400...500), Array(500...600)]
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                let nested: [Int] = [].join(nestedArray)
+            }
+        }
+    }
+    
+    func testNestedArrayFuncFlatMap() {
+        
+        let nestedArray = [Array(0...100), Array(100...200), Array(200...300), Array(300...400), Array(400...500), Array(500...600)]
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                let nested = nestedArray.flatMap{$0}
+            }
+        }
+    }
+    
+    func testNestedArrayFuncReduce() {
+        
+        let nestedArray = [Array(0...100), Array(100...200), Array(200...300), Array(300...400), Array(400...500), Array(500...600)]
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                let nested = nestedArray.reduce([], combine: {$0 + $1})
+            }
+        }
+    }
+    
 }
