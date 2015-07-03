@@ -216,4 +216,32 @@ class SwiftPerformanceComparisonTests: XCTestCase {
         }
     }
     
+    /* More reduce (from: http://www.raywenderlich.com/82599/swift-functional-programming-tutorial) */
+    
+    func testReductionNFunc() {
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                var evens = [Int]()
+                for i in 1...10 {
+                    if i % 2 == 0 {
+                        evens.append(i)
+                    }
+                }
+                
+                var evenSum = 0
+                for i in evens {
+                    evenSum += i
+                }
+            }
+        }
+    }
+    
+    func testReductionFunc() {
+        self.measureBlock { () -> Void in
+            for _ in 0...100 {
+                evenSum = Array(1...10)
+                    .filter { (number) in number % 2 == 0 }
+                    .reduce(0) { (total, number) in total + number }
+            }
+        }
 }
